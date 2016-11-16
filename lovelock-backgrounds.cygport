@@ -1,0 +1,51 @@
+NAME="lovelock-backgrounds"
+VERSION=14.91.1
+RELEASE=1
+CATEGORY="X11"
+SUMMARY="Fedora 15 desktop wallpaper"
+DESCRIPTION="Default wallpaper for the Fedora 15 release, along with a
+collection of selected wallpapers contributed by the Fedora community."
+HOMEPAGE="https://fedoraproject.org/wiki/Design"
+SRC_URI="https://fedorahosted.org/released/design-team/${NAME}-${VERSION}.tar.xz"
+
+ARCH=noarch
+
+PKG_NAMES="${NAME} ${NAME}-stripes"
+lovelock_backgrounds_DOCS="Attribution CC-BY-SA-3.0"
+lovelock_backgrounds_CONTENTS="
+	usr/share/backgrounds/lovelock/default/
+	usr/share/backgrounds/xfce/lovelock.*
+	usr/share/gnome-background-properties/desktop-backgrounds-lovelock.xml
+	usr/share/mate-background-properties/desktop-backgrounds-lovelock.xml
+	usr/share/wallpapers/Lovelock/
+"
+lovelock_backgrounds_stripes_DOCS="Attribution-Stripes CC-BY-SA-3.0"
+lovelock_backgrounds_stripes_CONTENTS="
+	usr/share/backgrounds/lovelock/default-stripes/
+	usr/share/backgrounds/xfce/lovelock-stripes.*
+	usr/share/gnome-background-properties/desktop-backgrounds-lovelock-stripes.xml
+	usr/share/mate-background-properties/desktop-backgrounds-lovelock-stripes.xml
+	usr/share/wallpapers/Lovelock_Stripes/
+"
+
+CYGPORT_USE_UNSTABLE_API=1
+src_unpack_hook() {
+	mv 'CC-BY-SA 3.0' CC-BY-SA-3.0
+}
+
+src_compile() {
+	cd ${S}
+	cygmake
+}
+
+src_install() {
+	cd ${S}
+	cyginstall
+	mv ${D}/usr/share/{xfce4/backdrops,backgrounds/xfce}
+
+	dodir /usr/share/mate-background-properties
+	sed -e 's|gnome-wp|mate-wp|' default/desktop-backgrounds-lovelock.xml \
+	    > ${D}/usr/share/mate-background-properties/desktop-backgrounds-lovelock.xml
+	sed -e 's|gnome-wp|mate-wp|' default-stripes/desktop-backgrounds-lovelock-stripes.xml \
+	    > ${D}/usr/share/mate-background-properties/desktop-backgrounds-lovelock-stripes.xml
+}
